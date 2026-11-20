@@ -1,0 +1,31 @@
+name: "owasp-zap-scan"
+
+on:
+  push:
+    branches:
+      - githubcicd
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dast:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Make script executable
+        run: chmod +x scripts/zap-script.sh
+
+      - name: Run OWASP ZAP scan
+        run: scripts/zap-script.sh
+
+      - name: Upload ZAP report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap report
+          path: zap_baseline_report.html
+          if-no-files-found: error
